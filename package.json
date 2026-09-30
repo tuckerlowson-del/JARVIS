@@ -1,8 +1,8 @@
 {
   "name": "jarvis-personal-assistant",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "JARVIS personal assistant for Windows - lightweight, offline-first, stable local controls and web command center",
-  "main": "src/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
@@ -25,16 +25,22 @@
     "productName": "JARVIS Personal Assistant",
     "asar": true,
     "files": [
-      "src/**/*",
-      "public/**/*",
-      "assets/**/*",
+      "main.js",
+      "preload.js",
+      "index.html",
+      "app.js",
+      "style.css",
+      "manifest.json",
+      "jarvis-icon.ico",
+      "jarvis-icon.png",
+      "build-installer.nsh",
       "package.json"
     ],
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "assets/jarvis-icon.ico"
+      "icon": "jarvis-icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -44,6 +50,12 @@
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false,
       "include": "build-installer.nsh"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "tuckerlowson-del",
+      "repo": "JARVIS",
+      "releaseType": "release"
     }
   }
 }
