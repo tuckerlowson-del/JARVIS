@@ -1,0 +1,49 @@
+{
+  "name": "jarvis-personal-assistant",
+  "version": "3.1.0",
+  "description": "JARVIS personal assistant for Windows - lightweight, offline-first, stable local controls and web command center",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder --win nsis",
+    "pack": "electron-builder --win dir"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "node-cron": "^4.2.1",
+    "systeminformation": "^5.27.11",
+    "ws": "^8.18.3",
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.jarvis.personalassistant",
+    "productName": "JARVIS Personal Assistant",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/jarvis-icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "include": "build-installer.nsh"
+    }
+  }
+}
