@@ -34,7 +34,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "assets/jarvis-icon.ico"
+      "icon": "assets/jarvis-icon.svg"
     },
     "nsis": {
       "oneClick": false,
@@ -43,8 +43,9 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false,
-      "include": "build-installer.nsh",
-      "shortcutName": "JARVIS"
+      "shortcutName": "JARVIS",
+      "installerIcon": "assets/jarvis-icon.svg",
+      "uninstallerIcon": "assets/jarvis-icon.svg"
     },
     "publish": {
       "provider": "github",
