@@ -1,27 +1,15 @@
-# JARVIS Personal Assistant 3.2.0
+# JARVIS 3.3.0
 
-Lightweight Windows Electron assistant with a native Android companion and LAN web remote.
+Cinematic Electron command center for Windows with local controls, AI routing, automations, memory, device discovery and GitHub updates.
 
-## Layout
-
-- `src/` — Electron main/preload
-- `public/desktop/` — Windows UI
-- `public/phone/` — phone web remote
-- `public/web/` — LAN web command center
-- `android/` — native Android Gradle project
-- `.github/workflows/` — Windows release and Android APK builds
-
-## Run Windows
-
-```powershell
-npm ci
-npm start
+## Build
+```bash
+npm install
+npm run build
 ```
 
-Build installer: `npm run build`.
+## Update feed
+https://github.com/tuckerlowson-del/JARVIS/releases/latest/download/
 
-## Android
-
-Run **Actions → Build JARVIS Android APK**. The workflow uploads the debug APK as an artifact.
-
-JARVIS only controls authorized devices and does not bypass Windows or Android authentication. Keep port 47821 on a trusted private network and never commit API keys.
+## Network capabilities
+Windows can identify reachable LAN devices and resolve hostnames where available. Per-device traffic accounting and Wi-Fi blocking require a supported router integration; JARVIS does not fake those capabilities from ARP/ping alone.
