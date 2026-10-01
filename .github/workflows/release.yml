@@ -2,7 +2,7 @@ name: JARVIS Release
 on:
   workflow_dispatch:
   push:
-    tags: ['v*']
+    branches: [main]
 permissions:
   contents: write
 jobs:
@@ -15,7 +15,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Build Windows installer
+      - name: Build and publish Windows release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run build
+        run: npx electron-builder --win nsis --publish always
