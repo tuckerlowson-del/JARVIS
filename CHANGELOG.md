@@ -1,6 +1,9 @@
-# JARVIS 3.2.0
+# JARVIS 3.3.0
 
-- Fixed Electron, web and Android project structure.
-- Restored desktop, phone and web interfaces.
-- Restored Android Gradle layout.
-- Fixed Electron Builder paths.
+- Reworked Electron UI into a cinematic AAA-inspired command deck.
+- Added self-diagnostics and clearer missing-capability reporting.
+- Improved network device cards with names, IP, MAC and status.
+- Added explicit router-telemetry status for per-device data usage and Wi-Fi blocking.
+- Added lightweight branded NSIS installer configuration.
+- Added new JARVIS icon asset.
+- Update channel is prefilled with the HTTPS GitHub Releases feed.
