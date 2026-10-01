@@ -1,6 +1,4 @@
 !include MUI2.nsh
-!define MUI_ICON "assets\\jarvis-icon.ico"
-!define MUI_UNICON "assets\\jarvis-icon.ico"
 !define MUI_ABORTWARNING
 !define MUI_WELCOMEPAGE_TITLE "Welcome to JARVIS"
 !define MUI_WELCOMEPAGE_TEXT "Install the lightweight JARVIS Personal AI System.\r\n\r\nOptional AI providers and router integrations remain under your control."
