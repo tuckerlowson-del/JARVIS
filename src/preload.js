@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('jarvis', {
   saveConfig: p => ipcRenderer.invoke('save-config', p),
   assistant: p => ipcRenderer.invoke('assistant', p),
   action: p => ipcRenderer.invoke('action', { type: p?.type, payload: p?.payload || p || {} }),
+  remoteInfo: () => ipcRenderer.invoke('info'),
   scanNetwork: () => ipcRenderer.invoke('scan-network'),
   checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
   downloadUpdate: () => ipcRenderer.invoke('download-update'),
