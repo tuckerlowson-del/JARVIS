@@ -1,7 +1,7 @@
 {
   "name": "jarvis-personal-assistant",
-  "version": "3.3.0",
-  "description": "JARVIS Personal AI System 3.3.0 - cinematic Electron control center, diagnostics, device telemetry and GitHub updates",
+  "version": "3.4.0",
+  "description": "JARVIS Personal AI System 3.4.0 - lightweight Windows command center, local controls, LAN remote, automation, memory and GitHub updates",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -55,7 +55,7 @@
       "publishAutoUpdate": true
     },
     "artifactName": "JARVIS-Setup-${version}.${ext}",
-    "compression": "maximum",
-    "publishUrl": "https://github.com/tuckerlowson-del/JARVIS/releases/latest/download/"
-  }
+    "compression": "maximum"
+  },
+  "author": "TuckerLawson"
 }
