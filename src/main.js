@@ -20,7 +20,7 @@ const windows = require('./windows');
 
 const PORT = 47821;
 const APP_VERSION = app.getVersion();
-const DEFAULT_UPDATE_FEED = String(process.env.JARVIS_UPDATE_FEED_URL || '').trim();
+const DEFAULT_UPDATE_FEED = String(process.env.JARVIS_UPDATE_FEED_URL || 'https://github.com/tuckerlowson-del/JARVIS/releases/latest').trim();
 const DATA_DIR = () => path.join(app.getPath('userData'), 'data');
 const DB_FILE = () => path.join(DATA_DIR(), 'database.json');
 const SYSTEM_FAST_TTL = 1800;
@@ -546,7 +546,6 @@ function startSchedules() {
 
 async function checkForUpdates() {
   try {
-    autoUpdater.setFeedURL({ provider: 'github', owner: 'tuckerlowson-del', repo: 'JARVIS' });
     const r = await autoUpdater.checkForUpdates();
     const v = r?.updateInfo?.version;
     if (v && v !== APP_VERSION) return { ok: true, available: true, currentVersion: APP_VERSION, version: v };
