@@ -33,8 +33,7 @@
     "win": {
       "target": [
         "nsis"
-      ],
-      "icon": "assets/jarvis-icon.ico"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -43,9 +42,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false,
-      "shortcutName": "JARVIS",
-      "installerIcon": "assets/jarvis-icon.ico",
-      "uninstallerIcon": "assets/jarvis-icon.ico"
+      "shortcutName": "JARVIS"
     },
     "publish": {
       "provider": "github",
