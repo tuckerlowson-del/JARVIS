@@ -12,9 +12,11 @@ const crypto = require('crypto');
 const dgram = require('dgram');
 const express = require('express');
 const cron = require('node-cron');
-const si = require('systeminformation');
+let si = null;
+function getSI(){ return si || (si = require('systeminformation')); }
 const { WebSocketServer } = require('ws');
 const { autoUpdater } = require('electron-updater');
+const windows = require('./windows');
 
 const PORT = 47821;
 const APP_VERSION = app.getVersion();
@@ -130,7 +132,8 @@ async function system(forceFull = false) {
   const fullFresh = systemCache && now - systemCache.fullAt < SYSTEM_FULL_TTL;
   if (!forceFull && fastFresh && fullFresh) return systemCache;
 
-  const [load, mem] = await Promise.all([si.currentLoad(), si.mem()]);
+  const api = getSI();
+  const [load, mem] = await Promise.all([api.currentLoad(), api.mem()]);
   const r = systemCache || {
     cpu: {}, ram: {}, storage: [], network: [], gpu: [], battery: null,
     platform: process.platform, hostname: os.hostname(), uptime: 0, fastAt: 0, fullAt: 0
@@ -151,7 +154,7 @@ async function system(forceFull = false) {
 
   if (forceFull || !fullFresh) {
     try {
-      const [fsz, gpu, batt] = await Promise.all([si.fsSize(), si.graphics(), si.battery()]);
+      const [fsz, gpu, batt] = await Promise.all([api.fsSize(), api.graphics(), api.battery()]);
       r.storage = fsz.map(x => ({ mount: x.mount, size: x.size, used: x.used, percent: x.use }));
       r.gpu = (gpu.controllers || []).map(x => ({ model: x.model, vram: x.vram, util: x.utilizationGpu, temp: x.temperatureGpu }));
       r.battery = batt;
@@ -190,6 +193,22 @@ function launchProcess(executable, args = []) {
   });
 }
 
+async function windowsAction(type, payload = {}) {
+  if (process.platform !== 'win32') throw Error('Windows controls are only available on Windows.');
+  if (type === 'brightness-set') return windows.setBrightness(payload.value);
+  if (type === 'brightness-up') return windows.brightnessDelta(Math.abs(Number(payload.step || 10)));
+  if (type === 'brightness-down') return windows.brightnessDelta(-Math.abs(Number(payload.step || 10)));
+  if (type === 'brightness-get') return 'Brightness ' + await windows.getBrightness() + '%';
+  if (type === 'volume-up') return windows.volume('up');
+  if (type === 'volume-down') return windows.volume('down');
+  if (type === 'volume-mute') return windows.volume('mute');
+  if (type === 'media') return windows.media(String(payload.action || 'playpause'));
+  if (type === 'settings') return windows.settings(String(payload.page || ''));
+  if (type === 'power') return windows.power(String(payload.action || 'sleep'));
+  if (type === 'wifi-status') return windows.wifiStatus();
+  throw Error('Unknown Windows control');
+}
+
 async function action(type, payload = {}) {
   payload = payload || {};
 
@@ -221,6 +240,12 @@ async function action(type, payload = {}) {
     await launchProcess('rundll32.exe', ['user32.dll,LockWorkStation']);
     log('action', 'PC locked');
     return 'PC locked';
+  }
+
+  if (['brightness-set','brightness-up','brightness-down','brightness-get','volume-up','volume-down','volume-mute','media','settings','power','wifi-status'].includes(type)) {
+    const result = await windowsAction(type, payload);
+    log('action', result);
+    return result;
   }
 
   if (type === 'clipboard') {
@@ -525,7 +550,7 @@ async function checkForUpdates() {
   if (!feed) return { ok: false, error: 'No JARVIS update channel is configured.' };
   if (!/^https:\/\//i.test(feed)) return { ok: false, error: 'The JARVIS update channel must use HTTPS.' };
   try {
-    autoUpdater.setFeedURL({ provider: 'generic', url: feed });
+    autoUpdater.setFeedURL({ provider: 'github', owner: 'tuckerlowson-del', repo: 'JARVIS' });
     const r = await autoUpdater.checkForUpdates();
     const v = r?.updateInfo?.version;
     if (v && v !== APP_VERSION) return { ok: true, available: true, currentVersion: APP_VERSION, version: v };
@@ -663,7 +688,7 @@ ipcMain.handle('info', () => ({
   token: token(),
   url: `http://${lanIP()}:${PORT}/phone`,
   version: APP_VERSION,
-  quickSystem: { cpuModel: os.cpus()[0]?.model || '', cores: os.cpus().length, totalMemory: os.totalmem(), freeMemory: os.freemem(), uptime: os.uptime() }
+  quickSystem: { cpuModel: os.cpus()[0]?.model || '', cores: os.cpus().length, totalMemory: os.totalmem(), freeMemory: os.freemem(), uptime: os.uptime() }, remoteUrl: `http://${lanIP()}:${PORT}/phone`, pairingToken: token()
 }));
 ipcMain.handle('system', async () => {
   const s = await system(false);
