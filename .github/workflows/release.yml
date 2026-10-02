@@ -1,14 +1,15 @@
 name: JARVIS Release
+
 on:
-  workflow_dispatch:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: jarvis-release-main
+  group: jarvis-release
   cancel-in-progress: true
 
 jobs:
@@ -29,13 +30,33 @@ jobs:
       - name: Validate JavaScript
         shell: pwsh
         run: |
-          $files = Get-ChildItem -Path src -Filter *.js -Recurse
-          foreach ($file in $files) {
-            Write-Host "Checking $($file.FullName)"
-            node --check $file.FullName
+          Get-ChildItem -Path src -Filter *.js -Recurse | ForEach-Object {
+            node --check $_.FullName
           }
 
-      - name: Build and publish Windows release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --win nsis --publish always
+      - name: Build Windows installer and update metadata
+        run: npx electron-builder --win nsis --publish never
+
+      - name: Read application version
+        id: version
+        shell: pwsh
+        run: |
+          $v = node -p "require('./package.json').version"
+          "version=$v" >> $env:GITHUB_OUTPUT
+          Write-Host "JARVIS version: $v"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: JARVIS v${{ steps.version.outputs.version }}
+          target_commitish: main
+          draft: false
+          prerelease: false
+          make_latest: true
+          generate_release_notes: true
+          overwrite_files: true
+          files: |
+            dist/JARVIS-Setup-*.exe
+            dist/latest.yml
+            dist/*.blockmap
