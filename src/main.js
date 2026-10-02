@@ -545,10 +545,6 @@ function startSchedules() {
 }
 
 async function checkForUpdates() {
-  const d = db();
-  const feed = String(d.settings.updateFeedUrl || DEFAULT_UPDATE_FEED).trim();
-  if (!feed) return { ok: false, error: 'No JARVIS update channel is configured.' };
-  if (!/^https:\/\//i.test(feed)) return { ok: false, error: 'The JARVIS update channel must use HTTPS.' };
   try {
     autoUpdater.setFeedURL({ provider: 'github', owner: 'tuckerlowson-del', repo: 'JARVIS' });
     const r = await autoUpdater.checkForUpdates();
